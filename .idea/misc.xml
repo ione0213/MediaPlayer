@@ -5,7 +5,9 @@
       <map>
         <entry key="app/src/main/res/drawable/ic_nav_home_selector.xml" value="0.11851851851851852" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1375" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_player.xml" value="0.11684782608695653" />
+        <entry key="app/src/main/res/layout/item_home_video.xml" value="0.1" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.21458333333333332" />
       </map>
     </option>
