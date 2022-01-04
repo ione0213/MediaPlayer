@@ -46,6 +46,7 @@ class MainActivity : BaseActivity() {
         findNavController(R.id.myNavHostFragment).addOnDestinationChangedListener { navController: NavController, _: NavDestination, _: Bundle? ->
             viewModel.currentFragmentType.value = when (navController.currentDestination?.id) {
                 R.id.homeFragment -> CurrentFragmentType.HOME
+                R.id.playerFragment -> CurrentFragmentType.PLAYER
                 else -> viewModel.currentFragmentType.value
             }
         }

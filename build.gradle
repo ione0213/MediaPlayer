@@ -10,6 +10,7 @@ buildscript {
         version_kotlin_coroutines = '1.5.0'
         version_recyclerview = '1.2.1'
         version_fragment = '1.4.0'
+        version_exoplayer = '2.16.1'
     }
     repositories {
         google()

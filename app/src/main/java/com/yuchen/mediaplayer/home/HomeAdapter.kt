@@ -7,15 +7,20 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.mediaplayer.data.Video
+import com.yuchen.mediaplayer.data.VideoDetail
 import com.yuchen.mediaplayer.databinding.ItemHomeVideoBinding
-import com.yuchen.mediaplayer.util.Logger
 
-class HomeAdapter : ListAdapter<Video, RecyclerView.ViewHolder>(DiffCallback) {
+class HomeAdapter(private val onClickListener: OnClickListener) : ListAdapter<Video, RecyclerView.ViewHolder>(DiffCallback) {
+
+    class OnClickListener(val clickListener: (video: Video) -> Unit) {
+        fun onClick(video: Video) = clickListener(video)
+    }
 
     class VideoViewHolder(private var binding: ItemHomeVideoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(video: Video) {
+        fun bind(video: Video, onClickListener: OnClickListener) {
+            binding.root.setOnClickListener { onClickListener.onClick(video)}
             binding.video = video
         }
     }
@@ -40,11 +45,9 @@ class HomeAdapter : ListAdapter<Video, RecyclerView.ViewHolder>(DiffCallback) {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Logger.i("holder: $holder")
         when (holder) {
             is VideoViewHolder -> {
-                Logger.i("123455: ${getItem(position).groupId}")
-                holder.bind(getItem(position))
+                holder.bind(getItem(position), onClickListener)
             }
         }
     }

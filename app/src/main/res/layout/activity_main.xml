@@ -5,6 +5,10 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <import type="com.yuchen.mediaplayer.util.CurrentFragmentType" />
+
         <variable
             name="viewModel"
             type="com.yuchen.mediaplayer.MainViewModel" />
@@ -27,11 +31,11 @@
                 android:layout_height="@dimen/height_toolbar"
                 android:background="@color/white"
                 android:elevation="4dp"
+                android:visibility="@{viewModel.currentFragmentType == CurrentFragmentType.PLAYER ? View.GONE : View.VISIBLE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:navigationIcon="@drawable/toolbar_menu">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/text_toolbar_title"
@@ -68,6 +72,7 @@
                 android:layout_height="56dp"
                 android:background="@color/white"
                 android:elevation="@dimen/elevation"
+                android:visibility="@{viewModel.currentFragmentType == CurrentFragmentType.PLAYER ? View.GONE : View.VISIBLE}"
                 app:itemIconSize="36dp"
                 app:itemIconTint="@drawable/bottom_nav_item_selector"
                 app:labelVisibilityMode="unlabeled"

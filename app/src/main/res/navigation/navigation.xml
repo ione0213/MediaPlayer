@@ -10,4 +10,17 @@
         android:name="com.yuchen.mediaplayer.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.yuchen.mediaplayer.player.PlayerFragment"
+        android:label="fragment_player"
+        tools:layout="@layout/fragment_player">
+        <argument
+            android:name="video"
+            app:argType="com.yuchen.mediaplayer.data.Video" />
+    </fragment>
+    <action
+        android:id="@+id/nav_to_player_fragment"
+        app:destination="@id/playerFragment"
+        app:popUpToInclusive="true"/>
 </navigation>
