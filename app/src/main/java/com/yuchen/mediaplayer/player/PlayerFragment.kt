@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.yuchen.mediaplayer.R
 import com.yuchen.mediaplayer.data.Video
 import com.yuchen.mediaplayer.databinding.FragmentPlayerBinding
 import com.yuchen.mediaplayer.ext.getVmFactory
-import com.yuchen.mediaplayer.home.HomeViewModel
 import com.yuchen.mediaplayer.util.Logger
 
 
@@ -33,8 +36,17 @@ class PlayerFragment : Fragment() {
     ): View {
 
         binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
 
         video = PlayerFragmentArgs.fromBundle(requireArguments()).video
+
+        val videoView = binding.videoView
+
+        val button = videoView.findViewById<ImageButton>(R.id.close)
+        button.setOnClickListener {
+            findNavController().navigateUp()
+        }
 
         return binding.root
     }
@@ -57,11 +69,14 @@ class PlayerFragment : Fragment() {
 
     private fun initializePlayer() {
 
-        val trackSelector = DefaultTrackSelector(requireContext()).apply {
-            setParameters(buildUponParameters().setMaxVideoSizeSd())
-        }
+        // TrackSelector for BASH format
+//        val trackSelector = DefaultTrackSelector(requireContext()).apply {
+//            setParameters(buildUponParameters().setMaxVideoSizeSd())
+//        }
 
         player = ExoPlayer.Builder(requireContext())
+            .setSeekForwardIncrementMs(10000)
+            .setSeekBackIncrementMs(10000)
             .build()
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
@@ -108,14 +123,8 @@ class PlayerFragment : Fragment() {
 
     private fun playbackStateListener() = object : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: Int) {
-            val stateString: String = when (playbackState) {
-                ExoPlayer.STATE_IDLE -> "ExoPlayer.STATE_IDLE      -"
-                ExoPlayer.STATE_BUFFERING -> "ExoPlayer.STATE_BUFFERING -"
-                ExoPlayer.STATE_READY -> "ExoPlayer.STATE_READY     -"
-                ExoPlayer.STATE_ENDED -> "ExoPlayer.STATE_ENDED     -"
-                else -> "UNKNOWN_STATE             -"
-            }
-            Logger.d("changed state to $stateString")
+
+            viewModel.setLoadingStatus(playbackState)
         }
     }
 }

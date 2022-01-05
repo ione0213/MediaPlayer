@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#999999</color>
     <color name="orange">#eb8914</color>
+    <color name="transparent">#00000000</color>
 
     <!-- Bottom Navigation -->
     <color name="bottom_navigation_item_normal">@color/gray</color>

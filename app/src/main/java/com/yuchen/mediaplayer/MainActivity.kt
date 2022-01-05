@@ -1,7 +1,9 @@
 package com.yuchen.mediaplayer
 
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.Gravity
 import androidx.activity.viewModels
@@ -37,6 +39,14 @@ class MainActivity : BaseActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
+        viewModel.currentFragmentType.observe(this) {
+            requestedOrientation = when (it) {
+                CurrentFragmentType.HOME -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                CurrentFragmentType.PLAYER -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                else -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+        }
 
         setupToolbar()
         setupNavController()

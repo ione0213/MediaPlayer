@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_forward_10.xml" value="0.1453125" />
         <entry key="app/src/main/res/drawable/ic_nav_home_selector.xml" value="0.11851851851851852" />
+        <entry key="app/src/main/res/layout-land/test.xml" value="0.12784588441331" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/custom_player_control_view.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/exo_player_control_view.xml" value="0.12228260869565218" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_player.xml" value="0.11684782608695653" />
         <entry key="app/src/main/res/layout/item_home_video.xml" value="0.1" />
