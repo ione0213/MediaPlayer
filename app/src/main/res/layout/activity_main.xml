@@ -45,7 +45,7 @@
                     android:fontFamily="@font/noto_sans"
                     android:letterSpacing="0.15"
                     android:text="@{viewModel.currentFragmentType.value}"
-                    android:textColor="@color/orange"
+                    android:textColor="#EF6C00"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     tools:layout_editor_absoluteX="177dp"
