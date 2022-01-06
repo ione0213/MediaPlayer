@@ -40,6 +40,7 @@ class MainActivity : BaseActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        // Rotate screen when playing video
         viewModel.currentFragmentType.observe(this) {
             requestedOrientation = when (it) {
                 CurrentFragmentType.HOME -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT

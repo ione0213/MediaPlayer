@@ -4,17 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSource
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.yuchen.mediaplayer.MediaApplication
@@ -22,7 +29,9 @@ import com.yuchen.mediaplayer.R
 import com.yuchen.mediaplayer.data.Video
 import com.yuchen.mediaplayer.databinding.FragmentPlayerBinding
 import com.yuchen.mediaplayer.ext.getVmFactory
+import com.yuchen.mediaplayer.util.DoubleClickListener
 import com.yuchen.mediaplayer.util.Logger
+import java.util.*
 
 
 class PlayerFragment : Fragment() {
@@ -38,6 +47,8 @@ class PlayerFragment : Fragment() {
     private lateinit var binding: FragmentPlayerBinding
     private lateinit var video: Video
 
+    private var isFillScreen = false
+
     private val playbackStateListener: Player.Listener by lazy { playbackStateListener() }
 
     override fun onCreateView(
@@ -51,8 +62,23 @@ class PlayerFragment : Fragment() {
 
         video = PlayerFragmentArgs.fromBundle(requireArguments()).video
 
-        val videoView = binding.videoView
+        //Switch video view size with double click event
+        binding.videoView.setOnClickListener(object: DoubleClickListener() {
+            override fun onDoubleClick(v: View?) {
+                binding.videoView.resizeMode = when (isFillScreen) {
+                    false -> {
+                        isFillScreen = true
+                        AspectRatioFrameLayout.RESIZE_MODE_FILL
+                    }
+                    true -> {
+                        isFillScreen = false
+                        AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    }
+                }
+            }
+        })
 
+        val videoView = binding.videoView
         val button = videoView.findViewById<ImageButton>(R.id.close)
         button.setOnClickListener {
             findNavController().navigateUp()
@@ -73,7 +99,6 @@ class PlayerFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        Logger.i("onStop()")
         releasePlayer()
     }
 
@@ -140,7 +165,7 @@ class PlayerFragment : Fragment() {
     private fun releasePlayer() {
         player?.run {
             viewModel.setPlaybackPosition(this.currentPosition)
-            viewModel.setCurrentWindow(this.currentWindowIndex)
+            viewModel.setCurrentWindow(this.currentMediaItemIndex)
             viewModel.setPlayWhenReady(this.playWhenReady)
             removeListener(playbackStateListener)
             release()

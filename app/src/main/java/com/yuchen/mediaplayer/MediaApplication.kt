@@ -26,6 +26,7 @@ class MediaApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
         leastRecentlyUsedCacheEvictor = LeastRecentlyUsedCacheEvictor(exoPlayerCacheSize)
         exoDatabaseProvider = StandaloneDatabaseProvider(this)
         simpleCache = SimpleCache(cacheDir, leastRecentlyUsedCacheEvictor, exoDatabaseProvider)
