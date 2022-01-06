@@ -10,9 +10,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
+import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import com.yuchen.mediaplayer.MediaApplication
 import com.yuchen.mediaplayer.R
 import com.yuchen.mediaplayer.data.Video
 import com.yuchen.mediaplayer.databinding.FragmentPlayerBinding
@@ -25,10 +30,15 @@ class PlayerFragment : Fragment() {
     private val viewModel by viewModels<PlayerViewModel> { getVmFactory() }
 
     private var player: ExoPlayer? = null
+    private lateinit var httpDataSourceFactory: HttpDataSource.Factory
+    private lateinit var defaultDataSourceFactory: DefaultDataSource.Factory
+    private lateinit var cacheDataSourceFactory: DataSource.Factory
+    private val simpleCache: SimpleCache = MediaApplication.simpleCache
+
     private lateinit var binding: FragmentPlayerBinding
     private lateinit var video: Video
 
-    private val playbackStateListener: Player.Listener = playbackStateListener()
+    private val playbackStateListener: Player.Listener by lazy { playbackStateListener() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,18 +84,35 @@ class PlayerFragment : Fragment() {
 //            setParameters(buildUponParameters().setMaxVideoSizeSd())
 //        }
 
+        httpDataSourceFactory = DefaultHttpDataSource.Factory()
+            .setAllowCrossProtocolRedirects(true)
+
+        defaultDataSourceFactory = DefaultDataSource.Factory(
+            requireContext(), httpDataSourceFactory
+        )
+
+        //A DataSource that reads and writes a Cache.
+        cacheDataSourceFactory = CacheDataSource.Factory()
+            .setCache(simpleCache)
+            .setUpstreamDataSourceFactory(httpDataSourceFactory)
+            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+
         player = ExoPlayer.Builder(requireContext())
             .setSeekForwardIncrementMs(10000)
             .setSeekBackIncrementMs(10000)
+            .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
             .build()
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
 
                 video.videoList.forEach {
-                    exoPlayer.addMediaItem(
-                        MediaItem.Builder()
-                            .setUri(it.videoUrl)
-                            .build()
+                    exoPlayer.addMediaSource(
+                        ProgressiveMediaSource.Factory(cacheDataSourceFactory)
+                            .createMediaSource(
+                                MediaItem.Builder()
+                                    .setUri(it.videoUrl)
+                                    .build()
+                            )
                     )
                 }
 
